@@ -21,6 +21,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "118e99c0-a489-4624-a052-d5f359ea788e"
+      }
+    },
+    "owner": "mprahm"
   }
 }
