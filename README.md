@@ -13,8 +13,8 @@ Edit [`src/config/bake-plan.ts`](src/config/bake-plan.ts). Each step lists its n
 
 ## Build an APK without your PC
 
-- **Actions → EAS build → Run workflow** starts a build on Expo's servers (needs the repository secret `EXPO_TOKEN`). It also runs when `main` changes. The APK link appears on expo.dev.
-- **Actions → Android check** compiles the app on every push and uploads a standalone APK as `handbake-apk`. That APK is signed with a throwaway key, so installing it over an EAS build requires uninstalling first.
+- **Actions → EAS build → Run workflow** starts a build on Expo's servers (needs the repository secret `EXPO_TOKEN`). It also runs when `main` changes, or when a pull request gets the `build-apk` label. The APK link appears on expo.dev.
+- **Actions → Android check** compiles the app for every pull request and uploads a standalone APK as `handbake-apk`. That APK is signed with a throwaway key, so installing it over an EAS build requires uninstalling first.
 
 ## Alarms
 

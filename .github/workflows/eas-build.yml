@@ -1,5 +1,6 @@
 # Starts an APK build on Expo's servers (EAS). Needs the repository secret EXPO_TOKEN.
-# Run it from the Actions tab, or it runs by itself when main changes.
+# Run it from the Actions tab, add the label "build-apk" to a pull request,
+# or it runs by itself when main changes.
 name: EAS build
 
 on:
@@ -11,9 +12,12 @@ on:
         required: true
   push:
     branches: [main]
+  pull_request:
+    types: [labeled]
 
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.label.name == 'build-apk'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
