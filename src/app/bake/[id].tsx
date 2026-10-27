@@ -109,7 +109,7 @@ export default function BakeScreen() {
 
         <SectionHead
           label={'One loaf · ' + bake.temp + ' °C kitchen'}
-          note={'Ready ' + weekdayDay(plan.end, false).split(' ')[0] + ' ' + clock(plan.end) + ' · ' + (silent ? 'silent' : 'alarm on')}
+          note={'Ready ' + weekdayDay(plan.end, false).split(' ')[0] + ' ' + clock(plan.end)}
           style={{ marginTop: 26 }}
         />
 
