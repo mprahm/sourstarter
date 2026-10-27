@@ -1,0 +1,32 @@
+# Starts an APK build on Expo's servers (EAS). Needs the repository secret EXPO_TOKEN.
+# Run it from the Actions tab, add the label "build-apk" to a pull request,
+# or it runs by itself when main changes.
+name: EAS build
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Build profile from eas.json
+        default: preview
+        required: true
+  push:
+    branches: [main]
+  pull_request:
+    types: [labeled]
+
+jobs:
+  build:
+    if: github.event_name != 'pull_request' || github.event.label.name == 'build-apk'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Start EAS build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: npx --yes eas-cli@latest build --platform android --profile ${{ inputs.profile || 'preview' }} --non-interactive --no-wait

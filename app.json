@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "Sourstarter",
+    "name": "Handbake",
     "slug": "sourstarter",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "package": "dk.prahm.sourstarter",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFFFFF",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -27,6 +27,26 @@
         "projectId": "118e99c0-a489-4624-a052-d5f359ea788e"
       }
     },
-    "owner": "mprahm"
+    "owner": "mprahm",
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "dark": {
+            "backgroundColor": "#0E0E0E"
+          },
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "scheme": "handbake",
+    "experiments": {
+      "typedRoutes": false
+    }
   }
 }
