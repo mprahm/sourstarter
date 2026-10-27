@@ -42,7 +42,8 @@
           "imageWidth": 160
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "./plugins/withLocalReleaseSigning"
     ],
     "scheme": "handbake",
     "experiments": {
