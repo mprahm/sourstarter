@@ -1,7 +1,7 @@
 import DateTimePicker, { DateTimePickerAndroid, type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Alert, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   alarmsAvailable,
@@ -109,7 +109,7 @@ export default function BakeScreen() {
 
         <SectionHead
           label={'One loaf · ' + bake.temp + ' °C kitchen'}
-          note={'Ready ' + weekdayDay(plan.end, false).split(' ')[0] + ' ' + clock(plan.end) + ' · ' + (silent ? 'silent' : 'alarm on')}
+          note={'Ready ' + weekdayDay(plan.end, false).split(' ')[0] + ' ' + clock(plan.end)}
           style={{ marginTop: 26 }}
         />
 
@@ -276,12 +276,14 @@ function StepRow({
   const nameColor = done || current ? c.ink : c.mut;
   const wait = !done ? waitText(r) : '';
   const delta = done ? Math.round((r.start - r.planned) / 60_000) : 0;
+  // Grow the time column with the system font size so times never wrap.
+  const { fontScale } = useWindowDimensions();
 
   return (
     <View style={[s.row, { borderBottomColor: c.hair }]}>
       <Pressable onPress={onToggle} accessibilityRole="button" accessibilityState={{ expanded: open }} style={s.rowHead}>
-        <View style={{ width: 52 }}>
-          <Text style={[s.t, { color: done || current ? c.ink : c.mut, fontFamily: current ? F.semi : F.light }, skipped && s.strike]}>
+        <View style={{ width: Math.ceil(42 * fontScale) + 10, paddingRight: 10 }}>
+          <Text numberOfLines={1} style={[s.t, { color: done || current ? c.ink : c.mut, fontFamily: current ? F.semi : F.light }, skipped && s.strike]}>
             {clock(current ? r.planned : r.start)}
           </Text>
           {done && Math.abs(delta) >= 3 ? <Mono style={{ fontSize: 10 }}>{(delta > 0 ? '+' : '−') + dur(Math.abs(delta))}</Mono> : null}

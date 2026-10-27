@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, CalendarIcon, ChevronIcon, Mono, PlusIcon, SectionHead } from '../components/ui';
 import { clock, dateRange, monthYear, weekdayDay } from '../lib/format';
@@ -16,6 +16,7 @@ type Item = { bake: Bake; live: boolean; first: number; end: number; days: strin
 export default function Breads() {
   const c = useColors();
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
   const { data, createBake } = useStore();
   const now = useNow(30_000);
   const [filterDay, setFilterDay] = useState<string | null>(null);
@@ -63,7 +64,7 @@ export default function Breads() {
             <CalendarIcon color={items.length ? c.ink : c.hair} dot={!!filterDay} />
           </Pressable>
         </View>
-        <Image source={hero} accessibilityLabel="A dark-crusted sourdough loaf with open score marks on a wooden board" style={s.hero} resizeMode="cover" />
+        <Image source={hero} accessibilityLabel="A dark-crusted sourdough loaf with open score marks on a wooden board" style={[s.hero, { width, height: (width * 3) / 4 }]} resizeMode="cover" />
         <Text style={[s.h1, { color: c.ink }]}>Your breads</Text>
 
         {filterDay ? (
@@ -250,7 +251,8 @@ const s = StyleSheet.create({
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 44 },
   brand: { fontFamily: F.display, fontSize: 16, letterSpacing: -0.16 },
   icon: { width: 44, height: 44, marginRight: -10, alignItems: 'center', justifyContent: 'center' },
-  hero: { width: undefined, marginHorizontal: -20, marginTop: 10, aspectRatio: 4 / 3 },
+  // Explicit size: with only aspectRatio, Android sizes the image from the 1200x900 source.
+  hero: { marginHorizontal: -20, marginTop: 10 },
   h1: { marginTop: 22, fontFamily: F.display, fontSize: 34, lineHeight: 36, letterSpacing: -0.85 },
   filter: { marginTop: 18, borderRadius: 12, paddingLeft: 14, paddingRight: 4, paddingVertical: 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   empty: { fontFamily: F.italic, fontSize: 14, lineHeight: 20, marginTop: 24 },
