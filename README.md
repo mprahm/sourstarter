@@ -29,7 +29,11 @@ adb logcat *:E ReactNativeJS:V AndroidRuntime:E > crash.txt
 
 Reproduce the crash, press Ctrl+C, and share `crash.txt`. JavaScript errors in the development build also show as a red screen with a stack trace.
 
-## Build an APK without your PC
+## Build an APK
+
+See [docs/BUILDING.md](docs/BUILDING.md) for how the cloud (EAS) and local (PC) builds work and when to use which. In short, on the PC: `npx.cmd expo run:android --variant release`.
+
+### Without your PC
 
 - **Actions → EAS build → Run workflow** starts a build on Expo's servers (needs the repository secret `EXPO_TOKEN`). It also runs when `main` changes, or when a pull request gets the `build-apk` label. The APK link appears on expo.dev.
 - **Actions → Android check** compiles the app for every pull request and uploads a standalone APK as `handbake-apk`. That APK is signed with a throwaway key, so installing it over an EAS build requires uninstalling first.
