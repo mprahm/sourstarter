@@ -8,7 +8,7 @@ export function SectionHead({ label, note, style }: { label: string; note?: stri
   const c = useColors();
   return (
     <View style={[styles.sh, { borderBottomColor: c.hair }, style]}>
-      <Text style={[styles.shLabel, { color: c.ink }]} numberOfLines={1}>
+      <Text style={[styles.shLabel, { color: c.ink }]}>
         {label.toUpperCase()}
       </Text>
       {note ? <Text style={[styles.mono, { color: c.mut }]}>{note.toUpperCase()}</Text> : null}
@@ -150,9 +150,11 @@ export function CalendarIcon({ color, dot }: { color: string; dot?: boolean }) {
 export const styles = StyleSheet.create({
   sh: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'baseline',
-    gap: 8,
+    columnGap: 12,
+    rowGap: 2,
     paddingBottom: 6,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
