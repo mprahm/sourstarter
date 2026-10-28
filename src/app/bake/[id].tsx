@@ -245,7 +245,8 @@ function waitText(r: Row) {
   const next = STEPS[r.index + 1];
   if (r.status === 'skipped' && r.dur === 0) return 'Removed from the plan';
   if (r.dur <= 0) return '';
-  const over = next?.overlap ? ' · next step starts ' + dur(next.overlap) + ' before' : '';
+  // On its own line, so the first line stays short while the duration changes.
+  const over = next?.overlap ? '\nNext step starts ' + dur(next.overlap) + ' before' : '';
   if (r.status === 'skipped') return s.waitLabel ? s.waitLabel + ' · ' + dur(r.dur) : dur(r.dur) + ' kept in the plan';
   if (s.swapped) return 'Proofing ' + dur(r.dur);
   if (s.waitLabel) return s.waitLabel + ' · ' + dur(r.dur) + over;
@@ -276,13 +277,12 @@ function StepRow({
   const nameColor = done || current ? c.ink : c.mut;
   const wait = !done ? waitText(r) : '';
   const delta = done ? Math.round((r.start - r.planned) / 60_000) : 0;
-  // Grow the time column with the system font size so times never wrap.
-  const { fontScale } = useWindowDimensions();
+  const timeCol = useTimeCol();
 
   return (
     <View style={[s.row, { borderBottomColor: c.hair }]}>
       <Pressable onPress={onToggle} accessibilityRole="button" accessibilityState={{ expanded: open }} style={s.rowHead}>
-        <View style={{ width: Math.ceil(42 * fontScale) + 10, paddingRight: 10 }}>
+        <View style={{ width: timeCol, paddingRight: 10 }}>
           <Text numberOfLines={1} style={[s.t, { color: done || current ? c.ink : c.mut, fontFamily: current ? F.semi : F.light }, skipped && s.strike]}>
             {clock(current ? r.planned : r.start)}
           </Text>
@@ -304,6 +304,13 @@ function StepRow({
       {open ? <StepDetail row={r} bake={bake} c={c} update={update} toggleSkip={toggleSkip} /> : null}
     </View>
   );
+}
+
+// Width of the time column. It grows with the system font size so times never
+// wrap, and the step details indent by the same amount to line up with the names.
+function useTimeCol() {
+  const { fontScale } = useWindowDimensions();
+  return Math.ceil(42 * fontScale) + 10;
 }
 
 function StepDetail({
@@ -360,9 +367,10 @@ function StepDetail({
       return { ...b, logs };
     });
   const skip = SKIP_TEXT[st.skip];
+  const timeCol = useTimeCol();
 
   return (
-    <View style={s.detail}>
+    <View style={[s.detail, { paddingLeft: timeCol }]}>
       <Text style={[s.about, { color: c.ink }]}>{st.about}</Text>
       <View style={[s.meta, { backgroundColor: c.soft }]}>
         {st.typical ? (
@@ -649,7 +657,7 @@ const s = StyleSheet.create({
   nm: { fontSize: 14.5, lineHeight: 20 },
   it: { fontFamily: F.italic, fontSize: 13, lineHeight: 18 },
   strike: { textDecorationLine: 'line-through' },
-  detail: { paddingLeft: 52, paddingBottom: 14, gap: 12 },
+  detail: { paddingBottom: 14, gap: 12 },
   about: { fontFamily: F.light, fontSize: 14.5, lineHeight: 21 },
   meta: { borderRadius: 10, padding: 12, gap: 10 },
   kv: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10 },
