@@ -198,7 +198,7 @@ function Timeline({
   day0.setHours(0, 0, 0, 0);
   let lastDay = -1;
   let lastGroup: string | undefined;
-  plan.rows.forEach((r) => {
+  plan.rows.forEach((r, i) => {
     const d = Math.floor((r.start - day0.getTime()) / 86_400_000);
     if (d !== lastDay) {
       out.push(<SectionHead key={'d' + d} label={'Day ' + (d + 1)} note={weekdayDay(r.start)} style={{ marginTop: 26 }} />);
@@ -228,6 +228,7 @@ function Timeline({
       <StepRow
         key={r.step.id}
         row={r}
+        next={plan.rows[i + 1]}
         bake={bake}
         c={c}
         open={openId === r.step.id}
@@ -240,13 +241,12 @@ function Timeline({
   return <View style={{ paddingBottom: 28 }}>{out}</View>;
 }
 
-function waitText(r: Row) {
+function waitText(r: Row, next?: Row) {
   const s = r.step;
-  const next = STEPS[r.index + 1];
   if (r.status === 'skipped' && r.dur === 0) return 'Removed from the plan';
   if (r.dur <= 0) return '';
   // On its own line, so the first line stays short while the duration changes.
-  const over = next?.overlap ? '\nNext step starts ' + dur(next.overlap) + ' before' : '';
+  const over = next?.ov ? '\nNext step starts ' + dur(next.ov) + ' before' : '';
   if (r.status === 'skipped') return s.waitLabel ? s.waitLabel + ' · ' + dur(r.dur) : dur(r.dur) + ' kept in the plan';
   if (s.swapped) return 'Proofing ' + dur(r.dur);
   if (s.waitLabel) return s.waitLabel + ' · ' + dur(r.dur) + over;
@@ -255,6 +255,7 @@ function waitText(r: Row) {
 
 function StepRow({
   row: r,
+  next,
   bake,
   c,
   open,
@@ -263,6 +264,7 @@ function StepRow({
   toggleSkip,
 }: {
   row: Row;
+  next?: Row;
   bake: Bake;
   c: Colors;
   open: boolean;
@@ -275,7 +277,7 @@ function StepRow({
   const skipped = r.status === 'skipped';
   const current = r.status === 'current';
   const nameColor = done || current ? c.ink : c.mut;
-  const wait = !done ? waitText(r) : '';
+  const wait = !done ? waitText(r, next) : '';
   const delta = done ? Math.round((r.start - r.planned) / 60_000) : 0;
   const timeCol = useTimeCol();
 
@@ -384,9 +386,9 @@ function StepDetail({
           </KV>
         ) : null}
         {st.ferment && factor !== 1 ? <Mono>Scaled for {bake.temp} °C from {dur(base)}</Mono> : null}
-        {st.overlap ? (
+        {r.ov ? (
           <KV label="Overlap" c={c}>
-            <Text style={[s.kvVal, { color: c.ink }]}>Starts {dur(st.overlap)} before the previous step ends</Text>
+            <Text style={[s.kvVal, { color: c.ink }]}>Starts {dur(r.ov)} before the previous step ends</Text>
           </KV>
         ) : null}
         {!r.log ? (

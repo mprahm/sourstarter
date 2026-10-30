@@ -18,7 +18,9 @@
 //                'keep'     a hands-on step: its time stays, nothing moves
 //                'collapse' a waiting step: its time is removed, later steps move up
 //                'swap'     replaced by the `swap` step below (only the cold proof)
-//    overlap   Optional. Start this many minutes before the previous step ends.
+//    overlap   Optional. Start this many minutes before the previous step ends,
+//              or 'own' to start exactly this step's own duration before it ends
+//              (so this step finishes when the previous one does).
 //    ferment   Optional. true = scaled by kitchen temperature (see KITCHEN_TEMPS).
 //    group     Optional. Groups steps under a heading ('bulk' or 'bake').
 //    waitLabel Optional. Replaces "45 min until next step" under the step.
@@ -38,7 +40,7 @@ export type StepConfig = {
   typical?: string;
   about: string;
   skip: SkipKind;
-  overlap?: number;
+  overlap?: number | 'own';
   ferment?: boolean;
   group?: 'bulk' | 'bake';
   waitLabel?: string;
@@ -193,7 +195,7 @@ export const STEPS: StepConfig[] = [
     typical: '45–60 min',
     about: 'Heat the oven to 250 °C with the Dutch oven inside. This starts while the loaf is still proofing.',
     skip: 'collapse',
-    overlap: 60, // starts 1 h before the proof ends
+    overlap: 'own', // hot exactly when the proof ends, whatever the preheat time
   },
   {
     id: 'bakeon',

@@ -13,7 +13,7 @@ export type StepView = {
   typical?: string;
   about: string;
   skip: StepConfig['skip'];
-  overlap?: number;
+  overlap?: StepConfig['overlap'];
   ferment?: boolean;
   group?: StepConfig['group'];
   waitLabel?: string;
@@ -27,6 +27,8 @@ export type Row = {
   index: number;
   /** Effective duration in minutes (0 when a waiting step is skipped). */
   dur: number;
+  /** Minutes this step starts before the previous one ends. */
+  ov: number;
   /** When the step should start according to the plan, epoch ms. */
   planned: number;
   /** When it started (logged) or will start, epoch ms. A late current step starts "now". */
@@ -85,7 +87,7 @@ export function computePlan(bake: Bake, now: number): Plan {
     const off = isOff(bake, s);
     const dur = off && s.skip === 'collapse' ? 0 : effDur(bake, v);
     // An overlap never reaches back further than the previous step lasts.
-    const ov = prev ? Math.min(s.overlap ?? 0, prev.dur) : 0;
+    const ov = prev ? Math.min(s.overlap === 'own' ? dur : (s.overlap ?? 0), prev.dur) : 0;
     const planned = prev ? prev.start + (prev.dur - ov) * MIN : bake.start;
     const log = bake.logs[s.id];
     let start = planned;
@@ -102,7 +104,7 @@ export function computePlan(bake: Bake, now: number): Plan {
         start = now;
       }
     }
-    rows.push({ step: v, index: i, dur, planned, start, status, late, log });
+    rows.push({ step: v, index: i, dur, ov, planned, start, status, late, log });
     prev = { start, dur };
   });
   return { rows, cur, started, end: rows[rows.length - 1].start };
