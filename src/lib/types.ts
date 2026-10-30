@@ -24,7 +24,7 @@ export type Defaults = {
 };
 
 export type AppData = {
-  version: 1;
+  version: 2;
   bakes: Bake[];
   silent: boolean;
   defaults: Defaults | null;

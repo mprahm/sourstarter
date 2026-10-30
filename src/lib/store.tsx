@@ -8,7 +8,34 @@ import { computePlan, isFinished, isOff } from './plan';
 import type { AppData, Bake } from './types';
 
 const KEY = 'handbake-data-v1';
-const EMPTY: AppData = { version: 1, bakes: [], silent: false, defaults: null };
+const EMPTY: AppData = { version: 2, bakes: [], silent: false, defaults: null };
+
+function renameKey<T>(rec: Record<string, T>, from: string, to: string): Record<string, T> {
+  if (!(from in rec)) return rec;
+  const out = { ...rec, [to]: rec[from] };
+  delete out[from];
+  return out;
+}
+
+/**
+ * Version 1 had four stretch & fold sets, the last one holding the rest of bulk.
+ * Version 2 adds a set: the old 'fold4' becomes 'fold5' (keeping its timing, log,
+ * note and skip), and a new plain 'fold4' goes in before it. Breads that were
+ * already past that point get the new set marked as skipped, so nothing moves.
+ */
+function migrate(raw: Partial<AppData> & { version?: number }): AppData {
+  const d = { ...EMPTY, ...raw } as AppData;
+  if ((raw.version ?? 1) >= 2) return d;
+  const later = STEPS.slice(STEPS.findIndex((s) => s.id === 'fold5')).map((s) => s.id);
+  const bakes = d.bakes.map((b) => {
+    const logs = renameKey(b.logs, 'fold4', 'fold5');
+    let skips = renameKey(b.skips, 'fold4', 'fold5');
+    if (later.some((id) => logs[id])) skips = { ...skips, fold4: true };
+    return { ...b, logs, skips, durs: renameKey(b.durs, 'fold4', 'fold5'), notes: renameKey(b.notes, 'fold4', 'fold5') };
+  });
+  const defaults = d.defaults && { ...d.defaults, durs: renameKey(d.defaults.durs, 'fold4', 'fold5'), skips: renameKey(d.defaults.skips, 'fold4', 'fold5') };
+  return { ...d, version: 2, bakes, defaults };
+}
 
 type Store = {
   ready: boolean;
@@ -97,7 +124,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     AsyncStorage.getItem(KEY)
       .then((raw) => {
-        if (raw) setData({ ...EMPTY, ...JSON.parse(raw) });
+        if (raw) setData(migrate(JSON.parse(raw)));
       })
       .catch(() => {})
       .finally(() => {

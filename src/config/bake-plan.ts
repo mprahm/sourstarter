@@ -123,6 +123,17 @@ export const STEPS: StepConfig[] = [
     id: 'fold4',
     name: 'Stretch & fold, set 4',
     action: 'Folded',
+    minutes: 30,
+    adjust: 5,
+    typical: 'every 30–45 min',
+    about: 'Gentle again. The dough should feel strong, smooth and a little puffy.',
+    skip: 'keep',
+    group: 'bulk',
+  },
+  {
+    id: 'fold5',
+    name: 'Stretch & fold, set 5',
+    action: 'Folded',
     minutes: 150, // the rest of bulk fermentation, untouched
     adjust: 15,
     typical: '1½–3½ h until bulk is done',
