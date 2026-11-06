@@ -31,7 +31,7 @@ Reproduce the crash, press Ctrl+C, and share `crash.txt`. JavaScript errors in t
 
 ## Build an APK
 
-See [docs/BUILDING.md](docs/BUILDING.md) for how the cloud (EAS) and local (PC) builds work and when to use which. In short, on the PC: `npx.cmd expo run:android --variant release`.
+See [docs/BUILDING.md](docs/BUILDING.md) for how the cloud (EAS) and local (PC) builds work and when to use which. In short, on the PC: `npm.cmd run build:phone`.
 
 ### Without your PC
 

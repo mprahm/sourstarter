@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
@@ -121,6 +122,7 @@ export default function Breads() {
           </View>
         ))}
         {filterDay && !shown.length ? <Text style={[s.empty, { color: c.mut }]}>No bakes on this day.</Text> : null}
+        <Mono style={{ marginTop: 30 }}>VERSION {Constants.expoConfig?.version}</Mono>
       </ScrollView>
 
       <View style={[s.fab, { bottom: insets.bottom + 24 }]}>
