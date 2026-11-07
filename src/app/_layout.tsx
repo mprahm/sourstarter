@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StoreProvider, useStore } from '../lib/store';
+import { TopFade } from '../components/ui';
 import { useColors } from '../lib/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -32,6 +33,7 @@ function Screens() {
     <>
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg }, animation: 'slide_from_right' }} />
+      <TopFade />
     </>
   );
 }

@@ -12,7 +12,7 @@ import {
   stopRinging,
   testAlarm,
 } from '../../../modules/handbake-alarm';
-import { BellIcon, Button, ChevronIcon, Chip, CloseIcon, Mono, PlusIcon, SectionHead, Stepper, Switch } from '../../components/ui';
+import { BellIcon, Button, ChevronIcon, Chip, CloseIcon, Mono, PlusIcon, SectionHead, Stepper, Switch, useTopPadding } from '../../components/ui';
 import { GROUPS, KITCHEN_TEMPS, STEPS } from '../../config/bake-plan';
 import { clock, countdown, dur, weekdayDay } from '../../lib/format';
 import { baseDur, computePlan, durKey, tempFactor, type Plan, type Row } from '../../lib/plan';
@@ -32,6 +32,7 @@ export default function BakeScreen() {
   const bake = store.bake(id);
   const c = useColors();
   const insets = useSafeAreaInsets();
+  const topPadding = useTopPadding();
   const now = useNow(1000);
   const [optionsOpen, setOptionsOpen] = useState(options === '1');
   const [open, setOpen] = useState<string | null | undefined>(undefined);
@@ -44,7 +45,7 @@ export default function BakeScreen() {
 
   if (!bake) {
     return (
-      <View style={{ flex: 1, backgroundColor: c.bg, padding: 20, paddingTop: insets.top + 20 }}>
+      <View style={{ flex: 1, backgroundColor: c.bg, padding: 20, paddingTop: topPadding }}>
         <BackLink c={c} />
         <Text style={{ fontFamily: F.body, color: c.mut, marginTop: 20 }}>This bread is gone.</Text>
       </View>
@@ -78,7 +79,7 @@ export default function BakeScreen() {
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingTop: insets.top + 14, paddingHorizontal: 20, paddingBottom: 28 }}
+        contentContainerStyle={{ paddingTop: topPadding, paddingHorizontal: 20, paddingBottom: 28 }}
       >
         <View style={s.top}>
           <BackLink c={c} />
