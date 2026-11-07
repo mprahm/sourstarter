@@ -27,7 +27,9 @@ Use it to skip the EAS queue. The phone must be connected with `adb` (USB or wir
 2. Run: `npm.cmd run build:phone`
 3. Commit the changed `app.json`, so the next build counts up from the new version.
 
-It raises the patch version in `app.json` (1.0.1 → 1.0.2), builds, then installs on the phone as an update, so breads are kept. The version shows at the bottom of Your breads. Cloud builds use whatever version is in `app.json`, without raising it. A build took 16 minutes when last timed, because it regenerates `android/`.
+It raises the patch version in `app.json` (1.0.1 → 1.0.2), builds, then installs on the phone as an update, so breads are kept. The version shows at the bottom of Your breads. Cloud builds use whatever version is in `app.json`, without raising it.
+
+It only regenerates `android/` when `app.json`, `package-lock.json` or `plugins/` changed, because that deletes the compiled native code and took 16 minutes when timed. After other native changes, such as a new app icon, force it with `npm.cmd run build:phone -- --prebuild`. The APK is built for 64-bit ARM phones only.
 
 If `adb devices` is empty, turn on Wireless debugging on the phone. If the phone lists no paired devices, tap **Pair device with pairing code** and run `adb pair <ip>:<port>` with the address on that screen.
 
