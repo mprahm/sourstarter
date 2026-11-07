@@ -644,7 +644,8 @@ const s = StyleSheet.create({
   back: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 44 },
   bell: { width: 44, height: 44, marginRight: -10, alignItems: 'center', justifyContent: 'center' },
   titleRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginTop: 18 },
-  h1: { flexShrink: 1, fontFamily: F.display, fontSize: 34, lineHeight: 36, letterSpacing: -0.85 },
+  // flex: 1, not flexShrink: Android measures this font too narrow, wraps the last word and clips it.
+  h1: { flex: 1, fontFamily: F.display, fontSize: 34, lineHeight: 36, letterSpacing: -0.85 },
   plus: { width: 30, height: 30, marginBottom: 3, borderRadius: 15, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   options: { marginTop: 18, gap: 18, paddingVertical: 16, borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth },
   countdown: { fontFamily: F.displayLight, fontSize: 84, lineHeight: 90, letterSpacing: -3.4, marginTop: 6, fontVariant: ['tabular-nums'] },
