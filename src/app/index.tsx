@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, CalendarIcon, ChevronIcon, Mono, PlusIcon, SectionHead, useTopPadding } from '../components/ui';
+import { Button, CalendarIcon, ChevronIcon, Mono, PlusIcon, SectionHead } from '../components/ui';
 import { clock, dateRange, monthYear, weekdayDay } from '../lib/format';
 import { activeDays, computePlan, isFinished, ymd } from '../lib/plan';
 import { useNow, useStore } from '../lib/store';
@@ -17,7 +17,6 @@ type Item = { bake: Bake; live: boolean; first: number; end: number; days: strin
 export default function Breads() {
   const c = useColors();
   const insets = useSafeAreaInsets();
-  const topPadding = useTopPadding();
   const { width } = useWindowDimensions();
   const { data, createBake } = useStore();
   const now = useNow(30_000);
@@ -59,7 +58,7 @@ export default function Breads() {
 
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
-      <ScrollView contentContainerStyle={{ paddingTop: topPadding, paddingHorizontal: 20, paddingBottom: insets.bottom + 120 }}>
+      <ScrollView contentContainerStyle={{ paddingTop: insets.top + 14, paddingHorizontal: 20, paddingBottom: insets.bottom + 120 }}>
         <View style={s.top}>
           <Text style={[s.brand, { color: c.ink }]}>Handbake</Text>
           <Pressable accessibilityLabel="Filter by date" onPress={() => setCalOpen(true)} style={s.icon} disabled={!items.length}>

@@ -1,25 +1,13 @@
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 import { F, RADIUS, useColors } from '../lib/theme';
-
-// The status bar's height, at least 40 so the fade covers its icons.
-function useStatusBarHeight() {
-  return Math.max(useSafeAreaInsets().top, 40);
-}
-
-/** Top padding for a screen, so its first line clears the fade at rest. */
-export function useTopPadding() {
-  return useStatusBarHeight() + 22;
-}
 
 /** Fades content out behind the status bar, so its text and icons stay readable. */
 export function TopFade() {
   const c = useColors();
-  const height = useStatusBarHeight() + 32;
   return (
-    <View pointerEvents="none" style={[styles.fade, { height }]}>
+    <View pointerEvents="none" style={styles.fade}>
       <Svg width="100%" height="100%">
         <Defs>
           <LinearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
@@ -181,7 +169,7 @@ export function CalendarIcon({ color, dot }: { color: string; dot?: boolean }) {
 }
 
 export const styles = StyleSheet.create({
-  fade: { position: 'absolute', top: 0, left: 0, right: 0 },
+  fade: { position: 'absolute', top: 0, left: 0, right: 0, height: 48 },
   sh: {
     flexDirection: 'row',
     flexWrap: 'wrap',
