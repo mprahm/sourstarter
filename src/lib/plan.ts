@@ -81,11 +81,18 @@ export function computePlan(bake: Bake, now: number): Plan {
   const started = Object.keys(bake.logs).length > 0;
   const cur = STEPS.findIndex((s) => !bake.logs[s.id] && !isOff(bake, s));
   const rows: Row[] = [];
+  const durOf = (s: StepConfig) => (isOff(bake, s) && s.skip === 'collapse' ? 0 : effDur(bake, viewOf(s, bake.skips)));
+  // Once the starter is mixed in, bulk ends at a fixed time: late folds eat into
+  // the rest of bulk instead of pushing the pre-shape later.
+  const bulkFirst = STEPS.findIndex((s) => s.group === 'bulk');
+  const bulkLast = STEPS.findLastIndex((s) => s.group === 'bulk');
+  const mixed = bake.logs[STEPS[bulkFirst].id];
+  const bulkEnd = mixed ? mixed.at + STEPS.slice(bulkFirst, bulkLast + 1).reduce((a, s) => a + durOf(s), 0) * MIN : 0;
   let prev: { start: number; dur: number } | null = null;
   STEPS.forEach((s, i) => {
     const v = viewOf(s, bake.skips);
     const off = isOff(bake, s);
-    const dur = off && s.skip === 'collapse' ? 0 : effDur(bake, v);
+    let dur = durOf(s);
     // An overlap never reaches back further than the previous step lasts.
     const ov = prev ? Math.min(s.overlap === 'own' ? dur : (s.overlap ?? 0), prev.dur) : 0;
     const planned = prev ? prev.start + (prev.dur - ov) * MIN : bake.start;
@@ -104,6 +111,7 @@ export function computePlan(bake: Bake, now: number): Plan {
         start = now;
       }
     }
+    if (i === bulkLast && mixed) dur = Math.max(0, Math.round((bulkEnd - start) / MIN));
     rows.push({ step: v, index: i, dur, ov, planned, start, status, late, log });
     prev = { start, dur };
   });
