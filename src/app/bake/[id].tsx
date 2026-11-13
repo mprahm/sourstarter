@@ -207,11 +207,13 @@ function Timeline({
     const g = r.step.group;
     if (g && g !== lastGroup) {
       const gs = plan.rows.filter((x) => x.step.group === g);
-      const total = gs.reduce((a, x) => a + x.dur, 0);
+      // Ends when the last step in the group ends, which includes any late logs.
+      const last = gs[gs.length - 1];
+      const end = last.start + last.dur * 60_000;
       out.push(
         <View key={'g' + g} style={s.grp}>
           <Text style={[s.grpLabel, { color: c.mut }]}>{GROUPS[g].toUpperCase()}</Text>
-          <Mono>{clock(gs[0].start) + '–' + clock(gs[0].start + total * 60_000)}</Mono>
+          <Mono>{clock(gs[0].start) + '–' + clock(end)}</Mono>
         </View>,
       );
     }
